@@ -9,12 +9,12 @@ import Foundation
 import Observation
 
 @Observable
-class TaskModel {
+class TaskModel: Identifiable {
     let title: String
     let date: Date
     var isDone: Bool
     
-    init(title: String, date: Date, isDone: Bool) {
+    init(title: String, date: Date, isDone: Bool = false) {
         self.title = title
         self.date = date
         self.isDone = isDone
