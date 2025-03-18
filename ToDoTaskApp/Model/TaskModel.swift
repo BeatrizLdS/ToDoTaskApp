@@ -8,10 +8,12 @@
 import Foundation
 import Observation
 
-@Observable
-class TaskModel: Identifiable {
-    let title: String
-    let date: Date
+import SwiftData
+
+@Model
+class TaskModel {
+    var title: String
+    var date: Date
     var isDone: Bool
     
     init(title: String, date: Date, isDone: Bool = false) {

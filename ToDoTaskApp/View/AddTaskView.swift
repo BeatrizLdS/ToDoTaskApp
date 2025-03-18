@@ -6,15 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AddTaskView: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
     
     @State var taskName: String = ""
     @State var taskDate: Date = Date()
-    
-    @Binding var tasks: [TaskModel]
-    
+        
     var body: some View {
         NavigationStack {
             Form {
@@ -28,7 +28,7 @@ struct AddTaskView: View {
                             title: taskName,
                             date: taskDate
                         )
-                        tasks.append(newTask)
+                        modelContext.insert(newTask)
                         dismiss()
                     } label: {
                         Text("Save")
@@ -50,6 +50,5 @@ struct AddTaskView: View {
 }
 
 #Preview {
-    @Previewable @State var tasks: [TaskModel] = []
-    AddTaskView(tasks: $tasks)
+    AddTaskView()
 }

@@ -6,15 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ListTaskView: View {
-    @State var tasks: [TaskModel] = [
-        TaskModel(title: "Task 1", date: Date()),
-        TaskModel(title: "Task 2", date: Date()),
-        TaskModel(title: "Task 3", date: Date()),
-        TaskModel(title: "Task 4", date: Date()),
-        TaskModel(title: "Task 5", date: Date()),
-    ]
+    @Environment(\.modelContext) var modelContext
+    
+    @Query var tasks: [TaskModel]
     
     @State var addTask: Bool = false
     
@@ -24,20 +21,9 @@ struct ListTaskView: View {
                 Section {
                     ForEach(tasks) { task in
                         TaskView(task: task)
-                            .swipeActions {
-                                Button(role: .destructive) {
-                                    tasks.removeAll { currentTask in
-                                        currentTask.id == task.id
-                                    }
-                                } label: {
-                                    Label {
-                                        Text("Delete")
-                                    } icon: {
-                                        Image(systemName: "trash")
-                                    }
-
-                                }
-
+                            .swipeActions(allowsFullSwipe: false) {
+                                deleteTask(task)
+                                viewTask(task)
                             }
                     }
                 } header: {
@@ -48,7 +34,7 @@ struct ListTaskView: View {
             }
             .listStyle(.insetGrouped)
             .sheet(isPresented: $addTask) {
-                AddTaskView(tasks: $tasks)
+                AddTaskView()
             }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -65,6 +51,30 @@ struct ListTaskView: View {
                 }
             }
             .navigationTitle("Tasks List")
+        }
+    }
+    
+    func deleteTask(_ task: TaskModel) -> some View {
+        Button(role: .destructive) {
+//            tasks.removeAll { currentTask in
+//                currentTask.id == task.id
+//            }
+            modelContext.delete(task)
+        } label: {
+            Label {
+                Text("Delete")
+            } icon: {
+                Image(systemName: "trash")
+            }
+
+        }
+    }
+    
+    func viewTask(_ task: TaskModel) -> some View {
+        NavigationLink {
+            DetailsTask(item: task)
+        } label: {
+            Image(systemName: "eye")
         }
     }
 }
